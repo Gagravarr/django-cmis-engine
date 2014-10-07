@@ -14,26 +14,49 @@
 
 import django
 
-from django.db.backends import (BaseDatabaseFeatures, BaseDatabaseOperations,
-                                BaseDatabaseWrapper)
+from django.db.backends import (BaseDatabaseClient, BaseDatabaseIntrospection,
+                                BaseDatabaseFeatures, BaseDatabaseOperations,
+                                BaseDatabaseValidation, BaseDatabaseWrapper)
 from django.db.backends.creation import BaseDatabaseCreation
 
+#############################################################################
+
+def complain(*args, **kwargs):
+    raise Exception("Sorry, that isn't supported for CMIS")
+
+def todo(*args, **kwargs):
+    raise Exception("Sorry, that feature still needs to be implemented")
+
+def ignore(*args, **kwargs):
+    pass
+
+#############################################################################
+
+class DatabaseClient(BaseDatabaseClient):
+    runshell = complain
+
 class DatabaseCreation(BaseDatabaseCreation):
-    def create_test_db(self, *args, **kwargs):
-       "Not supported, sorry"
-       pass
-    def destroy_test_db(self, *args, **kwargs):
-       "Not supported, sorry"
-       pass
+    create_test_db = ignore
+    destroy_test_db = ignore
+
+class DatabaseIntrospection(BaseDatabaseIntrospection):
+    get_table_list = complain
+    get_table_description = complain
+    get_relations = complain
+    get_indexes = complain
+    get_key_columns = complain
+
+#############################################################################
 
 class DatabaseCursor(object):
     def __init__(self, cmis_connection):
         self.connection = cmis_connection
 
 class DatabaseFeatures(BaseDatabaseFeatures):
-    def __init__(self, connection):
-        self.connection = connection
-        self.supports_transactions = False
+    can_introspect_decimal_field = False
+    can_introspect_positive_integer_field = False
+    can_introspect_small_integer_field = False
+    supports_transactions = False 
 
 class DatabaseOperations(BaseDatabaseOperations):
     compiler_module = "djangocmis.backends.compiler"
@@ -48,10 +71,12 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
 
         self.charset = "utf-8"
-        self.creation = DatabaseCreation(self)
         self.features = DatabaseFeatures(self)
         self.ops = DatabaseOperations(self)
-        self.settings_dict['SUPPORTS_TRANSACTIONS'] = False
+        self.client = DatabaseClient(self)
+        self.creation = DatabaseCreation(self)
+        self.introspection = DatabaseIntrospection(self)
+        self.validation = BaseDatabaseValidation(self)
 
     def close(self):
         if self.connection is not None:
