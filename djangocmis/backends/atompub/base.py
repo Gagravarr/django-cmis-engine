@@ -12,12 +12,13 @@
 #  limitations under the License.
 #
 
-from djangocmis.backends.atompub import atompub
-from djangocmis.backends.base import (DatabaseCreation, DatabaseCursor,
+from cmislib.atompub.binding import AtomPubBinding
+from djangocmis.backends.base import (DatabaseClient, DatabaseCreation,
+                                      DatabaseIntrospection, DatabaseCursor,
                                       DatabaseFeatures, DatabaseOperations,
                                       DatabaseWrapper as BaseDatabaseWrapper)
 
 class DatabaseWrapper(BaseDatabaseWrapper):
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
-        self.cmis_binding = atompub
+        self.cmis_binding = AtomPubBinding()

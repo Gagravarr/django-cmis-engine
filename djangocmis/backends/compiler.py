@@ -12,24 +12,12 @@
 #  limitations under the License.
 #
 
-import django.db.models
+class SQLCompiler(object):
+    def __init__(self, query, connection, using):
+        self.query = query
+        self.connection = connection
+        self.using = using
 
-class Model(django.db.models.base.Model):
-   """
-   Base class for all CMIS backed Models.
-   """
-
-   # Common fields
-   object_id = django.db.models.fields.CharField(max_length=200, primary_key=True)
-
-   # Metadata
-   cmis_class = None
-   base_path = None
-
-   def __init__(self, *args, **kwargs):
-       super(Model, self).__init__(*args, **kwargs)
-       self.saved_pk = self.pk
-
-   class Meta:
-       abstract = True
-
+    def results_iter(self):
+        "Runs the query, and return an iterator of the results"
+        return []

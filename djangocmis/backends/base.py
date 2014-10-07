@@ -66,6 +66,7 @@ class DatabaseOperations(BaseDatabaseOperations):
 
 class DatabaseWrapper(BaseDatabaseWrapper):
     vender = "cmis"
+    operators = {}
 
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
