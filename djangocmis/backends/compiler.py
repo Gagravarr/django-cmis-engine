@@ -12,13 +12,56 @@
 #  limitations under the License.
 #
 
+from django.db.models.sql.datastructures import Col
+from django.db.models.lookups import Exact
+import django
+import djangocmis.models
+
 class SQLCompiler(object):
     def __init__(self, query, connection, using):
         self.query = query
         self.connection = connection
         self.using = using
 
+    def has_parent(self, node):
+        if isinstance(node, Exact):
+           if isinstance(node.rhs, djangocmis.models.Model):
+              return node.rhs
+        return None
+
+    def compile(self, node):
+        if isinstance(node, Col):
+           return node.target.column, []
+        elif isinstance(node, Exact):
+           if isinstance(node.lhs, Col):
+              return "%s = '%s'" % (node.lhs.target.column, node.rhs), []
+           print node.lhs
+           print node.rhs
+        else:
+           return node.as_sql(self, self.connection)
+
     def results_iter(self):
         "Runs the query, and return an iterator of the results"
-        self.connection._cursor()
-        return []
+
+        # Does it have a path restriction in the query already?
+        parent = self.has_parent(self.query.where)
+        if parent:
+           parent_id = parent.object_id
+        else:
+           parent_obj = self.connection._by_path(self.query.model.base_path)
+           parent_id = parent_obj.id
+           if django.conf.settings.DEBUG:
+              print "Found parent at %s as %s" % (self.query.model.base_path, parent_obj)
+        extra_where = "IN_FOLDER('%s')" % parent_id
+
+        # Decide on the main filter
+        filterstr = 'select * from %s where ' % self.query.model.cmis_class
+        where, w_params = self.compile(self.query.where)
+        filterstr += where
+
+        # Add the path restriction
+        filterstr += " AND %s" % extra_where
+        print filterstr
+
+        # Query
+        return self.connection._query(filterstr)

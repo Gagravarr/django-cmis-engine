@@ -104,9 +104,17 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     def _commit(self):
         pass
 
+    def _by_path(self, path):
+        self.ensure_connection()
+        return self.connection.getObjectByPath(path)
+
     def _cursor(self):
         self.ensure_connection()
         return DatabaseCursor(self.connection)
+
+    def _query(self, query):
+        self.ensure_connection()
+        return self.connection.query(query)
 
     def _rollback(self):
         pass
