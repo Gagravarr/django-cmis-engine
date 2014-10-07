@@ -35,8 +35,7 @@ class SQLCompiler(object):
         elif isinstance(node, Exact):
            if isinstance(node.lhs, Col):
               return "%s = '%s'" % (node.lhs.target.column, node.rhs), []
-           print node.lhs
-           print node.rhs
+           raise Exception("Don't know how to handle %s -> %s" % (node.lhs, node.rhs))
         else:
            return node.as_sql(self, self.connection)
 
@@ -61,7 +60,19 @@ class SQLCompiler(object):
 
         # Add the path restriction
         filterstr += " AND %s" % extra_where
-        print filterstr
 
         # Query
-        return self.connection._query(filterstr)
+        results = self.connection._query(filterstr)
+
+        # Work out how to return it
+        if len(self.query.select):
+           fields = [x.field for x in self.query.select]
+        else:
+           fields = self.query.model._meta.fields
+        attrs = [f.db_column for f in fields if f.db_column]
+        for result in results:
+            props = result.getProperties()
+            row = []
+            for attr in attrs:
+                row.append(props[attr])
+            yield row
