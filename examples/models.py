@@ -15,7 +15,7 @@
 import djangocmis.models
 from djangocmis.models.fields import CharField
 
-BASE = "/app:company_home/st:sites/cm:cmis_example/"
+BASE = "/Sites/cmis-example/"
 
 class Folder(djangocmis.models.Model):
    base_path = BASE

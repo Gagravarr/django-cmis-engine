@@ -19,10 +19,10 @@ import django
 django.setup()
 
 # Fetch the doclib folder
-doclib = Folder.objects.get(name="cm:documentLibrary")
+doclib = Folder.objects.get(name="documentLibrary")
 
 # Fetch the data lists folder
-datalists = Folder.objects.get(name="cm:dataLists")
+datalists = Folder.objects.get(name="dataLists")
 
 # Fetch a document in the root of the doclib
 info = Document.objects.get(name="cm:example.txt", parent=doclib)
