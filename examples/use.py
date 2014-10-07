@@ -14,6 +14,10 @@
 
 from examples.models import Folder, Document
 
+# Start Django
+import django
+django.setup()
+
 # Fetch the doclib folder
 doclib = Folder.objects.get(name="cm:documentLibrary")
 
