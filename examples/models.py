@@ -12,6 +12,9 @@
 #  limitations under the License.
 #
 
+import djangocmis.models
+from djangocmis.models.fields import CharField
+
 BASE = "/app:company_home/st:sites/cm:cmis_example/"
 
 class Folder(djangocmis.models.Model):

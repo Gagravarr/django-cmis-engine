@@ -12,12 +12,12 @@
 #  limitations under the License.
 #
 
-from djangocmis.backends.atompub import atompub
-from djangocmis.backends.base import (DatabaseCreation, DatabaseCursor,
-                                      DatabaseFeatures, DatabaseOperations,
-                                      DatabaseWrapper as BaseDatabaseWrapper)
+from django.db.models import fields, SubfieldBase
 
-class DatabaseWrapper(BaseDatabaseWrapper):
+class CharField(fields.CharField):
     def __init__(self, *args, **kwargs):
-        super(DatabaseWrapper, self).__init__(*args, **kwargs)
-        self.cmis_binding = atompub
+        if not 'max_length' in kwargs:
+           kwargs['max_length'] = 200
+        super(CharField, self).__init__(*args, **kwargs)
+
+# TODO The rest
