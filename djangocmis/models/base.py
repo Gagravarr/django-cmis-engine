@@ -13,7 +13,7 @@
 #
 
 import django.db.models
-from djangocmis.models.fields import ParentField
+from djangocmis.models.fields import CharField, ParentField, CMISObjectField
 
 class Model(django.db.models.base.Model):
    """
@@ -21,7 +21,8 @@ class Model(django.db.models.base.Model):
    """
 
    # Common fields
-   object_id = django.db.models.fields.CharField(max_length=200, primary_key=True)
+   object_id = CharField(db_column="cmis:objectId", max_length=200, primary_key=True)
+   cmis_object = CMISObjectField()
    parent = ParentField()
 
    # Metadata

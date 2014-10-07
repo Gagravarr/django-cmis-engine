@@ -27,7 +27,10 @@ datalists = Folder.objects.get(name="dataLists")
 # Fetch a document in the root of the doclib
 info = Document.objects.get(name="example.txt", parent=doclib)
 print "The info object contains:"
-print "TODO"
+print "========================="
+print info.content
+print "========================="
+print ""
 
 # Create a new child folder to hold photos
 photos = Folder(name="photos", parent=doclib)

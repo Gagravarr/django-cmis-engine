@@ -20,20 +20,13 @@ class CharField(fields.CharField):
           kwargs['max_length'] = 200
        super(CharField, self).__init__(*args, **kwargs)
 
+# TODO Get this to work without needing to buffer it all as text
 _ContentField_name = "cmis:contentStream"
-class ContentField(fields.Field):
+class ContentField(fields.TextField):
    "A CMIS Content Stream"
-   name = "cmis:contentStream"
    def __init__(self, *args, **kwargs):
+      kwargs["db_column"] = _ContentField_name
       super(ContentField, self).__init__(*args, **kwargs)
-      self.name = _ContentField_name
-      self.db_column = self.name
-      self.verbose_name = self.name
-      self.rel = None
-      self.default = None
-      self._choices = []
-      self.primary_key = False
-   pass
 
 _CMISObjectField_name = "cmis:object"
 class CMISObjectField(fields.Field):
@@ -41,12 +34,6 @@ class CMISObjectField(fields.Field):
    def __init__(self, *args, **kwargs):
       kwargs["db_column"] = _CMISObjectField_name
       super(CMISObjectField, self).__init__(*args, **kwargs)
-      #self.db_column = self.name
-      #self.verbose_name = self.name
-      #self.rel = None
-      #self.default = None
-      #self._choices = []
-      #self.primary_key = False
 
 class ParentField(fields.Field):
    "Special field for representing the parent of a model"

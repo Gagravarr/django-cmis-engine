@@ -13,7 +13,7 @@
 #
 
 import djangocmis.models
-from djangocmis.models.fields import CharField
+from djangocmis.models.fields import CharField, ContentField
 
 BASE = "/Sites/cmis-example/"
 
@@ -21,7 +21,6 @@ class Folder(djangocmis.models.Model):
    base_path = BASE
    cmis_class = "cmis:folder"
     
-   objectId = CharField(db_column='cmis:objectId', max_length=200, primary_key=True)
    name     = CharField(db_column='cmis:name', max_length=200)
    path     = CharField(db_column='cmis:path', max_length=1000)
 
@@ -29,5 +28,5 @@ class Document(djangocmis.models.Model):
    base_path = BASE
    cmis_class = "cmis:document"
     
-   objectId = CharField(db_column='cmis:objectId', max_length=200, primary_key=True)
    name     = CharField(db_column='cmis:name', max_length=200)
+   content  = ContentField()

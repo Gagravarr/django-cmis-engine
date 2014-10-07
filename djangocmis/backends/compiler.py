@@ -82,5 +82,19 @@ class SQLCompiler(object):
             props = result.getProperties()
             row = []
             for attr in attrs:
-                row.append(props[attr])
+                if attr == djangocmis.models.fields._ContentField_name:
+                   # TODO Work out a way to lazy return this
+                   stream = result.getContentStream()
+                   content = stream.getvalue()
+                   stream.close()
+                   row.append(content)
+                elif attr == djangocmis.models.fields._CMISObjectField_name:
+                   # TODO Why does this value get lost?
+                   row.append(result)
+                else:
+                   row.append(props[attr])
             yield row
+
+class SQLUpdateCompiler(SQLCompiler):
+   # TODO Implement
+   pass

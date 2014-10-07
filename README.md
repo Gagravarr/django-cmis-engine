@@ -12,6 +12,12 @@ regular models.
 django-cmis-engine requires Django 1.6.x or 1.7.x.
 django-cmis-engine requires Apache Chemistry cmislib built from trunk
 
+Status
+======
+
+Currently, it's possible to fetch objects and read their non-content
+properties. Creating or updating doesn't yet work.
+
 Configuration
 =============
 
