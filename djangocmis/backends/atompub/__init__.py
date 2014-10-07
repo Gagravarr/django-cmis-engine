@@ -13,5 +13,7 @@
 #
 
 from cmislib.atompub.binding import AtomPubBinding
-BINDING = AtomPubBinding()
+from djangocmis.backends import Backend
 
+atompub = Backend()
+atompub.binding=AtomPubBinding()

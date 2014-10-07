@@ -12,6 +12,8 @@
 #  limitations under the License.
 #
 
-from cmislib.atompub.binding import AtomPubBinding
-BINDING = BrowserBinding()
+from cmislib.browser.binding import BrowserBinding
+from djangocmis.backends import Backend
 
+browser = Backend()
+browser.binding=BrowserBinding()
