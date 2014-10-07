@@ -15,9 +15,12 @@
 from django.db.models import fields, SubfieldBase
 
 class CharField(fields.CharField):
-    def __init__(self, *args, **kwargs):
-        if not 'max_length' in kwargs:
-           kwargs['max_length'] = 200
-        super(CharField, self).__init__(*args, **kwargs)
+   def __init__(self, *args, **kwargs):
+       if not 'max_length' in kwargs:
+          kwargs['max_length'] = 200
+       super(CharField, self).__init__(*args, **kwargs)
+
+class ParentField(fields.Field):
+    pass
 
 # TODO The rest

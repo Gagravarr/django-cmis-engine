@@ -25,19 +25,19 @@ doclib = Folder.objects.get(name="documentLibrary")
 datalists = Folder.objects.get(name="dataLists")
 
 # Fetch a document in the root of the doclib
-info = Document.objects.get(name="cm:example.txt", parent=doclib)
+info = Document.objects.get(name="example.txt", parent=doclib)
 print "The info object contains:"
 print "TODO"
 
 # Create a new child folder to hold photos
-photos = Folder(name="cm:photos", parent=doclib)
+photos = Folder(name="photos", parent=doclib)
 photos.save()
 
 # Upload two photos into it
-p1 = Document(name="cm:photo1.jpg", parent=photos)
+p1 = Document(name="photo1.jpg", parent=photos)
 #TODO add contents
 p1.save()
 
-p2 = Document(name="cm:photo2.jpg", parent=photos)
+p2 = Document(name="photo2.jpg", parent=photos)
 #TODO add contents
 p2.save()

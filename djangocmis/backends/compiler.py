@@ -27,12 +27,19 @@ class SQLCompiler(object):
         if isinstance(node, Exact):
            if isinstance(node.rhs, djangocmis.models.Model):
               return node.rhs
+        elif hasattr(node, "children"):
+           for child in node.children:
+              ret = self.has_parent(child)
+              if ret:
+                 return ret
         return None
 
     def compile(self, node):
         if isinstance(node, Col):
            return node.target.column, []
         elif isinstance(node, Exact):
+           if isinstance(node.rhs, djangocmis.models.Model):
+              return "IN_FOLDER('%s')" % node.rhs.object_id, []
            if isinstance(node.lhs, Col):
               return "%s = '%s'" % (node.lhs.target.column, node.rhs), []
            raise Exception("Don't know how to handle %s -> %s" % (node.lhs, node.rhs))
@@ -44,14 +51,13 @@ class SQLCompiler(object):
 
         # Does it have a path restriction in the query already?
         parent = self.has_parent(self.query.where)
-        if parent:
-           parent_id = parent.object_id
-        else:
+        extra_where = None
+        if not parent:
            parent_obj = self.connection._by_path(self.query.model.base_path)
            parent_id = parent_obj.id
            if django.conf.settings.DEBUG:
               print "Found parent at %s as %s" % (self.query.model.base_path, parent_obj)
-        extra_where = "IN_FOLDER('%s')" % parent_id
+           extra_where = "IN_FOLDER('%s')" % parent_id
 
         # Decide on the main filter
         filterstr = 'select * from %s where ' % self.query.model.cmis_class
@@ -59,7 +65,9 @@ class SQLCompiler(object):
         filterstr += where
 
         # Add the path restriction
-        filterstr += " AND %s" % extra_where
+        if extra_where:
+           filterstr += " AND %s" % extra_where
+        print filterstr
 
         # Query
         results = self.connection._query(filterstr)
