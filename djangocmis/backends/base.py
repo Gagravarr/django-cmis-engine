@@ -12,4 +12,4 @@
 #  limitations under the License.
 #
 
-from djangocmis.models.base import Model
+import django
