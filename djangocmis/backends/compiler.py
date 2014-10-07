@@ -20,4 +20,5 @@ class SQLCompiler(object):
 
     def results_iter(self):
         "Runs the query, and return an iterator of the results"
+        self.connection._cursor()
         return []

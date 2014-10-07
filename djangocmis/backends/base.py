@@ -13,6 +13,7 @@
 #
 
 import django
+from cmislib import CmisClient
 
 from django.db.backends import (BaseDatabaseClient, BaseDatabaseIntrospection,
                                 BaseDatabaseFeatures, BaseDatabaseOperations,
@@ -86,8 +87,19 @@ class DatabaseWrapper(BaseDatabaseWrapper):
 
     def ensure_connection(self):
         if self.connection is None:
-           # TODO
-           pass
+           self.cmis_client = CmisClient(
+                 self.settings_dict['HOST'],
+                 self.settings_dict['USER'],
+                 self.settings_dict['PASSWORD'],
+                 binding=self.cmis_binding()
+           )
+           repo_name = self.settings_dict['NAME']
+           if repo_name == "default" or not repo_name:
+              self.connection = self.cmis_client.defaultRepository
+           else:
+              self.connection = self.cmis_client.getRepository(repo_name)
+           if django.conf.settings.DEBUG:
+              print "Connected to Repository with ID %s" % self.connection.id
 
     def _commit(self):
         pass
