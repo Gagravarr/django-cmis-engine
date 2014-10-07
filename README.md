@@ -9,14 +9,18 @@ the CMIS backend is staightforward, you simply inherit from
 `djangocmis.models.Model` and declare the fields in the same way as for
 regular models.
 
-django-cmis-engine requires Django 1.6.x or 1.7.x.
-django-cmis-engine requires Apache Chemistry cmislib built from trunk
+django-cmis-engine requires:
+ * Django 1.6.x or 1.7.x.
+ * Apache Chemistry cmislib built from trunk
 
 Status
 ======
 
 Currently, it's possible to fetch objects and read their non-content
-properties. Creating or updating doesn't yet work.
+properties, but it isn't pretty.... Creating or updating doesn't yet work.
+
+If the `DEBUG` setting is True, then you'll get quite a bit of CMIS related
+debug output in your console, sorry about that.
 
 Configuration
 =============
@@ -43,8 +47,14 @@ attribute.
        base_path = "/path/to/object/parent"
        cmis_class = "cmis:document"
     
-       objectId = CharField(db_column='cmis:objectId', max_length=200, primary_key=True)
        name     = CharField(db_column='cmis:name', max_length=200)
+
+The `base_path` is used as the default path in which to fetch objects from,
+but can be overriden by passing a parent or path parameter when performing
+query operations. See the examples directory for how to use this.
+
+The opaque CMIS Object ID is available via the `object_id` field on
+the based model object.
 
 Inspiration
 ===========
