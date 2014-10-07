@@ -9,7 +9,8 @@ the CMIS backend is staightforward, you simply inherit from
 `djangocmis.models.Model` and declare the fields in the same way as for
 regular models.
 
-django-cmis-engine required Django 1.6.x or 1.7.x.
+django-cmis-engine requires Django 1.6.x or 1.7.x.
+django-cmis-engine requires Apache Chemistry cmislib built from trunk
 
 Configuration
 =============
@@ -38,3 +39,10 @@ attribute.
     
        objectId = CharField(db_column='cmis:objectId', max_length=200, primary_key=True)
        name     = CharField(db_column='cmis:name', max_length=200)
+
+Inspiration
+===========
+
+This is inspired by, and partially modelled on the Django LDAP DB 
+(django-ldapdb) engine, which is another Django ORM Engine based
+on a non-database backend.
